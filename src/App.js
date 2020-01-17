@@ -18,7 +18,27 @@ class App extends Component {
 
   // component안에 state가 변경될 때마다 render가 발생
   state = {
-    greeting : "hello!"
+    greeting : "hello!",
+
+    movies : [
+      {
+        title: "괴물",
+        poster: "https://buckstorrent5.site/data/file/mov1/thumb-4848_0_500x713.jpg"
+      },
+      {
+        title: "악인전",
+        poster: "https://buckstorrent5.site/data/file/mov1/thumb-4841_0_500x715.jpg"
+      },
+      {
+        title: "표적",
+        poster: "https://buckstorrent5.site/data/file/mov1/thumb-4836_0_500x715.jpg"
+      },
+      {
+        title: "사자",
+        poster: "https://bubbletorrent5.xyz/data/file/mov1/thumb-4886_0_500x716.jpg"
+      }
+    ]
+
   }
 
 
@@ -31,7 +51,15 @@ class App extends Component {
 
       setTimeout(()=>{
         this.setState({
-          greeting : "hello again"
+          greeting : "hello again",
+
+          movies:[
+            ...this.state.movies,
+            {
+              title: "사자",
+              poster: "https://bubbletorrent5.xyz/data/file/mov1/thumb-4886_0_500x716.jpg"
+            }
+          ]
         });
       }, 5000);
   }
@@ -44,11 +72,10 @@ class App extends Component {
       <div className="App">
         {this.state.greeting}
 
-        <Movie />
-        <Movie />
-        <Movie />
-        <Movie />
-        <Movie />
+        {this.state.movies.map((movie, index)=>{
+          return <Movie title={movie.title} poster={movie.poster} key={index} />
+        })}
+      
       </div>
     );
 
