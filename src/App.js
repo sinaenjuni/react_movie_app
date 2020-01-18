@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 import Movie from './Movie.js';
@@ -17,29 +16,7 @@ class App extends Component {
 
 
   // component안에 state가 변경될 때마다 render가 발생
-  state = {
-    greeting : "hello!",
-
-    movies : [
-      {
-        title: "괴물",
-        poster: "https://buckstorrent5.site/data/file/mov1/thumb-4848_0_500x713.jpg"
-      },
-      {
-        title: "악인전",
-        poster: "https://buckstorrent5.site/data/file/mov1/thumb-4841_0_500x715.jpg"
-      },
-      {
-        title: "표적",
-        poster: "https://buckstorrent5.site/data/file/mov1/thumb-4836_0_500x715.jpg"
-      },
-      {
-        title: "사자",
-        poster: "https://bubbletorrent5.xyz/data/file/mov1/thumb-4886_0_500x716.jpg"
-      }
-    ]
-
-  }
+  state = { }
 
 
   componentWillMount(){
@@ -49,32 +26,49 @@ class App extends Component {
   componentDidMount(){
       console.log("did mount");
 
-      setTimeout(()=>{
-        this.setState({
-          greeting : "hello again",
+      this._getMovies();
 
-          movies:[
-            ...this.state.movies,
-            {
-              title: "사자",
-              poster: "https://bubbletorrent5.xyz/data/file/mov1/thumb-4886_0_500x716.jpg"
-            }
-          ]
-        });
-      }, 5000);
+      
+  } 
+
+
+  _getMovies = async () => {
+    const movies = await this._callApi()
+    this.setState({
+     movies
+    })
   }
+
+
+  _callApi = () =>{
+    const result = fetch("https://yts.lt/api/v2/list_movies.json?sort_by=rating")
+    .then(potato => potato.json())
+    .then(json => json.data.movies)
+    .catch(err=>console.log(err))
+    
+    return result
+  }
+
+
+  _renderMovies = () =>{
+    const movies = this.state.movies.map(movie => {
+      console.log(movie)
+      return <Movie title={movie.title} poster={movie.medium_cover_image} key={movie.id} genres={movie.genres} synopsis={movie.synopsis}/>
+    });
+
+    return movies;
+  }
+
+
 
   render(){
     console.log("render")
-
+    const { movies } = this.state;
     return (
       
-      <div className="App">
-        {this.state.greeting}
-
-        {this.state.movies.map((movie, index)=>{
-          return <Movie title={movie.title} poster={movie.poster} key={index} />
-        })}
+      <div className={movies ? "App" : "App--loading"}>
+        
+        {this.state.movies ? this._renderMovies() : 'Loading'}
       
       </div>
     );
